@@ -7,4 +7,5 @@ const pollRoutes = Router();
 
 pollRoutes.post('/poll',validateSchema(pollSchema), pollCreateSurvey);
 pollRoutes.get('/poll', pollCollectionSurvey);
+
 export default pollRoutes;
