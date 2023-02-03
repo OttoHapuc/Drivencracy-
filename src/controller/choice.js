@@ -17,7 +17,7 @@ export async function createChoice(req,res){
     if(expireAt < surveyExpired) return res.status(409).send("survey time ended");
 
     try{
-    await dataBase.collection("choices").insertOne(choice);
+    await dataBase.collection("choices").insertOne({title: choice.title, pollId: ObjectId(choice.pollId)});
     }catch (err) {return res.status(500)};
 
     res.status(201).send("OK");
@@ -26,17 +26,19 @@ export async function createChoice(req,res){
 export async function createChoiceId(req,res){
     const pollId = req.params.id;
 
-    const exist = dataBase.collection("choices").findOne({_id:ObjectId(pollId)});
+    const exist = await dataBase.collection("choices").findOne({_id:ObjectId(pollId)});
+    console.log(exist)
     if(!exist) return res.status(404).send("Is not a option existent");
 
-    const expireAt = await dataBase.collection("surveys").findOne({_id: ObjectId(pollId)});
+    const expireAt = await dataBase.collection("surveys").findOne({_id: ObjectId(exist.pollId)});
+    console.log(expireAt);
     const surveyExpired = dayjs().format("DD/MM/YYYY HH:mm");
-    if(expireAt < surveyExpired) return res.status(409).send("survey time ended");
+    if(expireAt.expireAt < surveyExpired) return res.status(409).send("survey time ended");
     
     try{
         await dataBase.collection("createChoices").insertOne({
             cratedAt: dayjs().format("DD/MM/YYYY HH:mm"),
-            choiceId: pollId
+            choiceId: ObjectId(pollId)
         });
         res.status(201).send("OK")
     }catch (err) {return res.status(500)};

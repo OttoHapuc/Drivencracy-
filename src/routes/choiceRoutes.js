@@ -7,6 +7,6 @@ import { choiceSchema } from "../schemas/choiceSchema.js";
 const choiceRoutes = Router();
 
 choiceRoutes.post("/choice", createChoice);
-choiceRoutes.get("/choice/:id/vote", createChoiceId);
+choiceRoutes.post("/choice/:id/vote", createChoiceId);
 
 export default choiceRoutes;
