@@ -18,3 +18,13 @@ export async function pollCreateSurvey(req, res){
 export async function pollCollectionSurvey(req,res){
     res.send(dataBase.collection("surveys").find().toArray());
 }
+
+export async function pollIdChoice(req,res){
+    const pollId = req.params.id;
+    try{
+        const surveyExist = await dataBase.colletion("surveys").findOne({pollId});
+        if(!surveyExist) return res. status(404).send("survey not found");
+        const choices = await dataBase.collection("choices").find({pollId});
+        return res.send(choices)
+    }catch (err){return res.status(500).send(err)}
+}
